@@ -9,29 +9,34 @@ import (
 	"time"
 )
 
-var TimeOutError = errors.New("TimeOut")
+// TimeOut...
+var ErrorTimeOut = fmt.Errorf("TimeOut")
 
+// Func wrapper
 type Job func() error
 
+// Base struct
 type Actuator struct {
 	timeOut *time.Duration
 }
 
+// NewActuator is used to create actuator instance
 func NewActuator() *Actuator {
 	return &Actuator{}
 }
 
-// Set timeout
+// WithTimeOut is used to set timeout
 func (c *Actuator) WithTimeOut(t time.Duration) *Actuator {
 	c.timeOut = &t
 	return c
 }
 
+// Exec is used to run jobs concurrently
 func (c *Actuator) Exec(jobs ...Job) error {
 	return c.ExecWithContext(context.Background(), jobs...)
 }
 
-// Run jobs concurrently
+// ExecWithContext is used to run jobs concurrently
 // Return nil when jobs are all completed successfully,
 // or return error when some exception happen such as timeout
 func (c *Actuator) ExecWithContext(ctx context.Context, jobs ...Job) error {
@@ -84,7 +89,7 @@ func (c *Actuator) ExecWithContext(ctx context.Context, jobs ...Job) error {
 
 	select {
 	case <-time.After(timeout):
-		return TimeOutError
+		return ErrorTimeOut
 	case <-ctx.Done():
 		return nil
 	case err := <-resChan:
