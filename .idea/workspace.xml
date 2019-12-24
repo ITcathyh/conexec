@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="cdff3dad-0b02-4d4d-a5d1-1439b267af03" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="/usr/local/go" />
+  <component name="ProjectId" id="1VPvdyjIoH77UlJGiIbvbB4jiBY" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="ask.go.tool.to.install.GoImportsTaskConsumer" value="true" />
+    <property name="configurable.Global.GOPATH.is.expanded" value="true" />
+    <property name="configurable.Project.GOPATH.is.expanded" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Go" />
+  </component>
+  <component name="RunManager" selected="Go Test.TestConExec in ITcathyh/conexec">
+    <configuration name="TestConExec in ITcathyh/conexec" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="conexec" />
+      <working_directory value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="ITcathyh/conexec" />
+      <pattern value="^TestConExec$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestNormal in ITcathyh/conexec" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="conexec" />
+      <working_directory value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="ITcathyh/conexec" />
+      <pattern value="^TestNormal$" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Test.TestConExec in ITcathyh/conexec" />
+      <item itemvalue="Go Test.TestNormal in ITcathyh/conexec" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestNormal in ITcathyh/conexec" />
+        <item itemvalue="Go Test.TestConExec in ITcathyh/conexec" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+    <proxy>https://goproxy.io</proxy>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="427" y="89" key="#TestConExec_in_ITcathyh/conexec" timestamp="1577169047531">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="427" y="89" key="#TestConExec_in_ITcathyh/conexec/0.0.1440.900@0.0.1440.900" timestamp="1577169047531" />
+    <state x="184" y="113" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1577171828019">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="184" y="113" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1577171828019" />
+    <state x="369" y="260" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1577171463425">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="369" y="260" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1577171463425" />
+    <state width="1398" height="245" key="GridCell.Tab.0.bottom" timestamp="1577171834133">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1577171834133" />
+    <state width="1398" height="245" key="GridCell.Tab.0.center" timestamp="1577171834132">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1577171834132" />
+    <state width="1398" height="245" key="GridCell.Tab.0.left" timestamp="1577171834131">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1577171834131" />
+    <state width="1398" height="245" key="GridCell.Tab.0.right" timestamp="1577171834132">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1577171834132" />
+    <state x="229" y="89" key="SettingsEditor" timestamp="1577171502708">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="229" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1577171502708" />
+  </component>
+</project>
