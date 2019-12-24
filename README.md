@@ -1,4 +1,9 @@
 ## Introduction
+[![Build Status](https://travis-ci.org/ITcathyh/conexec.svg?branch=master)](https://travis-ci.org/ITcathyh/conexec)
+[![codecov](https://codecov.io/gh/ITcathyh/conexec/branch/master/graph/badge.svg)](https://codecov.io/gh/ITcathyh/conexec)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ITcathyh/conexec)](https://goreportcard.com/report/github.com/ITcathyh/conexec)
+[![GoDoc](https://godoc.org/github.com/ITcathyh/conexec?status.svg)](https://godoc.org/github.com/ITcathyh/conexec)
+
 conexec is a concurrent toolkit to help execute funcs concurrently in an efficient and safe way.It supports specifying the overall timeout to avoid blocking.
 
 ## How to use
