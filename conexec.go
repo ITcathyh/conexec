@@ -53,7 +53,7 @@ func (c *Actuator) ExecWithContext(ctx context.Context, jobs ...Job) error {
 	}
 
 	ctx, cancel := context.WithCancel(ctx)
-	resChan := make(chan error)
+	resChan := make(chan error, l)
 	wg := &sync.WaitGroup{}
 	wg.Add(l)
 

@@ -55,6 +55,16 @@ func TestError(t *testing.T) {
 			fmt.Println("4")
 			return errors.New("TestErr")
 		},
+		func() error {
+			time.Sleep(time.Millisecond*500)
+			fmt.Println("5")
+			return errors.New("TestErr2")
+		},
+		func() error {
+			time.Sleep(time.Second)
+			fmt.Println("6")
+			return errors.New("TestErr3")
+		},
 	))
 	et := time.Now().UnixNano()
 	t.Logf("used time:%ds", (et-st)/1000000)
