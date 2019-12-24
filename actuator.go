@@ -2,17 +2,16 @@ package conexec
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"runtime/debug"
 	"sync"
 	"time"
 )
 
-// TimeOut...
+// TimeOut
 var ErrorTimeOut = fmt.Errorf("TimeOut")
 
-// Func wrapper
+// Job Type
 type Job func() error
 
 // Base struct
@@ -22,7 +21,9 @@ type Actuator struct {
 
 // NewActuator is used to create actuator instance
 func NewActuator() *Actuator {
-	return &Actuator{}
+	return &Actuator{
+
+	}
 }
 
 // WithTimeOut is used to set timeout
@@ -41,11 +42,13 @@ func (c *Actuator) Exec(jobs ...Job) error {
 // or return error when some exception happen such as timeout
 func (c *Actuator) ExecWithContext(ctx context.Context, jobs ...Job) error {
 	l := len(jobs)
+
 	if l == 0 {
 		return nil
 	}
 
 	var timeout time.Duration
+
 	if c.timeOut != nil {
 		timeout = *c.timeOut
 	} else {
@@ -75,13 +78,13 @@ func (c *Actuator) ExecWithContext(ctx context.Context, jobs ...Job) error {
 				wg.Done()
 
 				if r := recover(); r != nil {
-					err := errors.New(fmt.Sprintf("conexec panic:%v, info:%s", r, string(debug.Stack())))
+					err := fmt.Errorf("conexec panic:%v, info:%s", r, string(debug.Stack()))
+
 					resChan <- err
 				}
 			}()
 
-			err := f()
-			if err != nil {
+			if err := f(); err != nil {
 				resChan <- err
 			}
 		}(job)

@@ -7,10 +7,10 @@
 conexec is a concurrent toolkit to help execute funcs concurrently in an efficient and safe way.It supports specifying the overall timeout to avoid blocking.
 
 ## How to use
-Generally it can be set as a singleton to save memory.
+Generally it can be set as a singleton to save memory.Here is the example to use it.
 ```
 	c := NewActuator()
-	c.WithTimeOut(time.Second)
+	c.WithTimeOut(time.Second) // set time out
 	err := c.Exec(
 		func() error {
 			fmt.Println(1)
