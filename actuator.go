@@ -42,17 +42,8 @@ func (c *Actuator) Exec(jobs ...Job) error {
 // or return error when some exception happen such as timeout
 func (c *Actuator) ExecWithContext(ctx context.Context, jobs ...Job) error {
 	l := len(jobs)
-
 	if l == 0 {
 		return nil
-	}
-
-	var timeout time.Duration
-
-	if c.timeOut != nil {
-		timeout = *c.timeOut
-	} else {
-		timeout = time.Hour
 	}
 
 	ctx, cancel := context.WithCancel(ctx)
@@ -60,8 +51,7 @@ func (c *Actuator) ExecWithContext(ctx context.Context, jobs ...Job) error {
 	wg := &sync.WaitGroup{}
 	wg.Add(l)
 
-	// Make sure the jobs are completed
-	// and channel is closed
+	// Make sure the jobs are completed and channel is closed
 	go func() {
 		wg.Wait()
 		cancel()
@@ -79,7 +69,6 @@ func (c *Actuator) ExecWithContext(ctx context.Context, jobs ...Job) error {
 
 				if r := recover(); r != nil {
 					err := fmt.Errorf("conexec panic:%v, info:%s", r, string(debug.Stack()))
-
 					resChan <- err
 				}
 			}()
@@ -90,8 +79,28 @@ func (c *Actuator) ExecWithContext(ctx context.Context, jobs ...Job) error {
 		}(job)
 	}
 
+	return c.wait(ctx, resChan)
+}
+
+// wait waits for the notification of execution result
+func (c *Actuator) wait(ctx context.Context, resChan chan error) error {
+	if c.timeOut != nil {
+		return c.waitWithTimeout(ctx, resChan)
+	}
+
 	select {
-	case <-time.After(timeout):
+	case <-ctx.Done():
+		return nil
+	case err := <-resChan:
+		return err
+	}
+}
+
+// waitWithTimeout is used to waits for the notification of execution result
+// when the timeout is set
+func (c *Actuator) waitWithTimeout(ctx context.Context, resChan chan error) error {
+	select {
+	case <-time.After(*c.timeOut):
 		return ErrorTimeOut
 	case <-ctx.Done():
 		return nil
