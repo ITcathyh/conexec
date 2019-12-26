@@ -3,108 +3,100 @@ package conexec
 import (
 	"context"
 	"fmt"
-	"runtime/debug"
-	"sync"
 	"time"
 )
+
+// Actuator interface
+type BaseActuator interface {
+	Exec(tasks ...Task) error
+	ExecWithContext(ctx context.Context, tasks ...Task) error
+}
+
+// Actuator interface
+type TimedActuator interface {
+	BaseActuator
+	GetTimeout() *time.Duration
+	setTimeout(timeout *time.Duration)
+}
 
 // TimeOut
 var ErrorTimeOut = fmt.Errorf("TimeOut")
 
-// Job Type
-type Job func() error
+// Task Type
+type Task func() error
 
-// Base struct
+// Base Actuator struct
 type Actuator struct {
-	timeOut *time.Duration
+	timeout *time.Duration
 }
 
-// NewActuator is used to create actuator instance
-func NewActuator() *Actuator {
-	return &Actuator{
-
-	}
+// NewActuator creates an Actuator instance
+func NewActuator(opt ...*Options) *Actuator {
+	c := &Actuator{}
+	setOptions(c, opt...)
+	return c
 }
 
 // WithTimeOut is used to set timeout
 func (c *Actuator) WithTimeOut(t time.Duration) *Actuator {
-	c.timeOut = &t
+	c.timeout = &t
 	return c
 }
 
-// Exec is used to run jobs concurrently
-func (c *Actuator) Exec(jobs ...Job) error {
-	return c.ExecWithContext(context.Background(), jobs...)
+// Exec is used to run tasks concurrently
+func (c *Actuator) Exec(tasks ...Task) error {
+	return c.ExecWithContext(context.Background(), tasks...)
 }
 
-// ExecWithContext is used to run jobs concurrently
-// Return nil when jobs are all completed successfully,
+// ExecWithContext is used to run tasks concurrently
+// Return nil when tasks are all completed successfully,
 // or return error when some exception happen such as timeout
-func (c *Actuator) ExecWithContext(ctx context.Context, jobs ...Job) error {
-	l := len(jobs)
-	if l == 0 {
-		return nil
-	}
+func (c *Actuator) ExecWithContext(ctx context.Context, tasks ...Task) error {
+	return execTasks(c, ctx, simplyRun, tasks...)
+	// ctx, cancel := context.WithCancel(ctx)
+	// resChan := make(chan error, size)
+	// wg := &sync.WaitGroup{}
+	// wg.Add(size)
+	//
+	// // Make sure the tasks are completed and channel is closed
+	// go func() {
+	// 	wg.Wait()
+	// 	cancel()
+	// 	close(resChan)
+	// }()
+	//
+	// // Sadly we can not kill a goroutine manually
+	// // So when an error happens, the other tasks will continue
+	// // But the good news is that main progress
+	// // will know the error immediately
+	// for _, task := range tasks {
+	// 	// go func(f Task) {
+	// 	// 	defer func() {
+	// 	// 		wg.Done()
+	// 	//
+	// 	// 		if r := recover(); r != nil {
+	// 	// 			err := fmt.Errorf("conexec panic:%v, info:%s", r, string(debug.Stack()))
+	// 	// 			resChan <- err
+	// 	// 		}
+	// 	// 	}()
+	// 	//
+	// 	// 	if err := f(); err != nil {
+	// 	// 		resChan <- err
+	// 	// 	}
+	// 	// }(task)
+	// 	f := wrapperTask(task, wg, resChan)
+	// 	go f()
+	// }
 
-	ctx, cancel := context.WithCancel(ctx)
-	resChan := make(chan error, l)
-	wg := &sync.WaitGroup{}
-	wg.Add(l)
-
-	// Make sure the jobs are completed and channel is closed
-	go func() {
-		wg.Wait()
-		cancel()
-		close(resChan)
-	}()
-
-	// Sadly we can not kill a goroutine manually
-	// So when an error happens, the other jobs will continue
-	// But the good news is that main progress
-	// will know the error immediately
-	for _, job := range jobs {
-		go func(f Job) {
-			defer func() {
-				wg.Done()
-
-				if r := recover(); r != nil {
-					err := fmt.Errorf("conexec panic:%v, info:%s", r, string(debug.Stack()))
-					resChan <- err
-				}
-			}()
-
-			if err := f(); err != nil {
-				resChan <- err
-			}
-		}(job)
-	}
-
-	return c.wait(ctx, resChan)
+	// return wait(c, ctx, resChan)
 }
 
-// wait waits for the notification of execution result
-func (c *Actuator) wait(ctx context.Context, resChan chan error) error {
-	if c.timeOut != nil {
-		return c.waitWithTimeout(ctx, resChan)
-	}
-
-	select {
-	case <-ctx.Done():
-		return nil
-	case err := <-resChan:
-		return err
-	}
+// GetTimeout return the timeout set before
+func (c *Actuator) GetTimeout() *time.Duration {
+	return c.timeout
 }
 
-// waitWithTimeout is used to waits for the notification of execution result
-// when the timeout is set
-func (c *Actuator) waitWithTimeout(ctx context.Context, resChan chan error) error {
-	select {
-	case <-time.After(*c.timeOut):
-		return ErrorTimeOut
-	case <-ctx.Done():
-		return nil
-	case err := <-resChan:
-		return err
-	}
+// setTimeout sets the timeout
+func (c *Actuator) setTimeout(timeout *time.Duration) {
+	c.timeout = timeout
 }
