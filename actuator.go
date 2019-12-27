@@ -53,42 +53,6 @@ func (c *Actuator) Exec(tasks ...Task) error {
 // or return error when some exception happen such as timeout
 func (c *Actuator) ExecWithContext(ctx context.Context, tasks ...Task) error {
 	return execTasks(c, ctx, simplyRun, tasks...)
-	// ctx, cancel := context.WithCancel(ctx)
-	// resChan := make(chan error, size)
-	// wg := &sync.WaitGroup{}
-	// wg.Add(size)
-	//
-	// // Make sure the tasks are completed and channel is closed
-	// go func() {
-	// 	wg.Wait()
-	// 	cancel()
-	// 	close(resChan)
-	// }()
-	//
-	// // Sadly we can not kill a goroutine manually
-	// // So when an error happens, the other tasks will continue
-	// // But the good news is that main progress
-	// // will know the error immediately
-	// for _, task := range tasks {
-	// 	// go func(f Task) {
-	// 	// 	defer func() {
-	// 	// 		wg.Done()
-	// 	//
-	// 	// 		if r := recover(); r != nil {
-	// 	// 			err := fmt.Errorf("conexec panic:%v, info:%s", r, string(debug.Stack()))
-	// 	// 			resChan <- err
-	// 	// 		}
-	// 	// 	}()
-	// 	//
-	// 	// 	if err := f(); err != nil {
-	// 	// 		resChan <- err
-	// 	// 	}
-	// 	// }(task)
-	// 	f := wrapperTask(task, wg, resChan)
-	// 	go f()
-	// }
-
-	// return wait(c, ctx, resChan)
 }
 
 // GetTimeout return the timeout set before

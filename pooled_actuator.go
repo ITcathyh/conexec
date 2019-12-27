@@ -10,29 +10,28 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const (
+	DefaultWorkerNum = 4
+)
+
 var (
 	ErrorUsingActuator = fmt.Errorf("ErrorUsingActuator")
 )
 
 // Actuator which has a worker pool
-// If the workerNum is zero or negative,
-// base actuator will be used only
 type PooledActuator struct {
 	timeout *time.Duration
 
-	workerNum    int32
-	pool         *ants.Pool
-	baseActuator *Actuator
+	workerNum int
+	pool      *ants.Pool
 
 	initOnce sync.Once
-	opt      []*Options
 }
 
 // NewPooledActuator creates an PooledActuator instance
-func NewPooledActuator(workerNum int32, opt ...*Options) *PooledActuator {
+func NewPooledActuator(workerNum int, opt ...*Options) *PooledActuator {
 	c := &PooledActuator{
 		workerNum: workerNum,
-		opt:       opt,
 	}
 	setOptions(c, opt...)
 	return c
@@ -43,7 +42,7 @@ func (c *PooledActuator) Exec(tasks ...Task) error {
 	return c.ExecWithContext(context.Background(), tasks...)
 }
 
-// ExecWithContext is used to run tasks concurrently
+// ExecWithContext uses goroutine pool to run tasks concurrently
 // Return nil when tasks are all completed successfully,
 // or return error when some exception happen such as timeout
 func (c *PooledActuator) ExecWithContext(ctx context.Context, tasks ...Task) error {
@@ -53,8 +52,6 @@ func (c *PooledActuator) ExecWithContext(ctx context.Context, tasks ...Task) err
 
 	if c.workerNum == -1 {
 		return ErrorUsingActuator
-	} else if c.pool == nil {
-		return c.baseActuator.ExecWithContext(ctx, tasks...)
 	}
 
 	return execTasks(c, ctx, c.runWithPool, tasks...)
@@ -66,16 +63,15 @@ func (c *PooledActuator) GetTimeout() *time.Duration {
 }
 
 // initPooledActuator init the pooled actuator once while the runtime
+// If the workerNum is zero or negative,
+// default worker num will be used
 func (c *PooledActuator) initPooledActuator() {
 	if c.workerNum <= 0 {
-		c.baseActuator = NewActuator(c.opt...)
-		c.workerNum = 0
-		c.opt = nil
-		return
+		c.workerNum = DefaultWorkerNum
 	}
 
 	var err error
-	c.pool, err = ants.NewPool(int(c.workerNum))
+	c.pool, err = ants.NewPool(c.workerNum)
 
 	if err != nil {
 		c.workerNum = -1
