@@ -2,7 +2,10 @@ package conexec
 
 import (
 	"context"
+	"fmt"
+	"runtime/debug"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -69,4 +72,33 @@ func execTasks(c TimedActuator, ctx context.Context,
 // simplyRun uses a new goroutine to run the function
 func simplyRun(f func()) {
 	go f()
+}
+
+// Exec simply runs the tasks concurrently
+// True will be returned is all tasks complete successfully
+// otherwise false will be returned
+func Exec(tasks ...Task) bool {
+	var c int32
+	wg := &sync.WaitGroup{}
+	wg.Add(len(tasks))
+
+	for _, t := range tasks {
+		go func(task Task) {
+			defer func() {
+				if r := recover(); r != nil {
+					atomic.CompareAndSwapInt32(&c, 0, 1)
+					fmt.Printf("conexec panic:%v\n%s\n", r, string(debug.Stack()))
+				}
+
+				wg.Done()
+			}()
+
+			if err := task(); err != nil {
+				atomic.CompareAndSwapInt32(&c, 0, 1)
+			}
+		}(t)
+	}
+
+	wg.Wait()
+	return c == 0
 }
