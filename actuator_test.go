@@ -6,21 +6,26 @@ import (
 )
 
 func TestTimeOut(t *testing.T) {
-	c := NewActuator()
-	c.WithTimeOut(time.Millisecond * 50)
+	timeout := time.Millisecond*50
+	opt := &Options{TimeOut:&timeout}
+	c := NewActuator(opt)
 	testTimeout(t, c)
 }
 
 func TestError(t *testing.T) {
-	c := NewActuator()
-	c.WithTimeOut(time.Second)
+	timeout := time.Second
+	opt := &Options{TimeOut:&timeout}
+	c := NewActuator(opt)
 	testError(t, c)
 }
 
 func TestNormal(t *testing.T) {
 	c := NewActuator()
 	testNormal(t, c)
-	c.WithTimeOut(time.Minute)
+
+	timeout := time.Minute
+	opt := &Options{TimeOut:&timeout}
+	c = NewActuator(opt)
 	testNormal(t, c)
 }
 

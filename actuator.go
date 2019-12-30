@@ -37,12 +37,6 @@ func NewActuator(opt ...*Options) *Actuator {
 	return c
 }
 
-// WithTimeOut is used to set timeout
-func (c *Actuator) WithTimeOut(t time.Duration) *Actuator {
-	c.timeout = &t
-	return c
-}
-
 // Exec is used to run tasks concurrently
 func (c *Actuator) Exec(tasks ...Task) error {
 	return c.ExecWithContext(context.Background(), tasks...)
