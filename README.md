@@ -7,7 +7,7 @@
 conexec is a concurrent toolkit to help execute functions concurrently in an efficient and safe way.It supports specifying the overall timeout to avoid blocking.
 
 ## How to use
-Generally it can be set as a singleton to save memory.Here is the example to use it.
+Generally it can be set as a singleton to save memory.There are some example to use it.
 ### Normal Actuator
 Actuator is a base struct to execute functions concurrently.
 ```
