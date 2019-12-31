@@ -2,11 +2,12 @@ package conexec
 
 import (
 	"context"
-	"fmt"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // wait waits for the notification of execution result
@@ -62,8 +63,8 @@ func execTasks(c TimedActuator, parent context.Context,
 	// But the good news is that main progress
 	// will know the error immediately
 	for _, task := range tasks {
-		child,_ := context.WithCancel(ctx)
-		f := wrapperTask(child,task, wg, resChan)
+		child, _ := context.WithCancel(ctx)
+		f := wrapperTask(child, task, wg, resChan)
 		execFunc(f)
 	}
 
@@ -88,7 +89,7 @@ func Exec(tasks ...Task) bool {
 			defer func() {
 				if r := recover(); r != nil {
 					atomic.StoreInt32(&c, 1)
-					fmt.Printf("conexec panic:%v\n%s\n", r, string(debug.Stack()))
+					log.Errorf("conexec panic:%v\n%s\n", r, string(debug.Stack()))
 				}
 
 				wg.Done()

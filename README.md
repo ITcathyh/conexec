@@ -11,8 +11,9 @@ Generally it can be set as a singleton to save memory.Here is the example to use
 ### Normal Actuator
 Actuator is a base struct to execute functions concurrently.
 ```
-	c := NewActuator()
-	c.WithTimeOut(time.Second) // set time out
+	opt := &Options{TimeOut:DurationPtr(time.Millisecond*50)}
+	c := NewActuator(opt)
+	
 	err := c.Exec(
 		func() error {
 			fmt.Println(1)
@@ -37,28 +38,20 @@ Actuator is a base struct to execute functions concurrently.
 ### Pooled Actuator
 Pooled actuator uses the goroutine pool to execute functions.In some times it is a more efficient way.
 ```
-	timeout := time.Millisecond*50
-	opt := &Options{TimeOut:&timeout}
+	opt := &Options{TimeOut:DurationPtr(time.Millisecond*50)}
 	c := NewPooledActuator(5, opt)
 	
-	err := c.Exec(
-		func() error {
-			fmt.Println(1)
-			time.Sleep(time.Second * 2)
-			return nil
-		},
-		func() error {
-			fmt.Println(2)
-			return nil
-		},
-		func() error {
-			time.Sleep(time.Second * 1)
-			fmt.Println(3)
-			return nil
-		},
-	)
+	err := c.Exec(...)
 	
 	if err != nil {
 		// ...do sth
+	}
+```
+### Simply exec using goroutine
+```
+	done := Exec(...)
+
+	if !done {
+		// ... do sth 
 	}
 ```
