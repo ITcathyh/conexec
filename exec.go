@@ -37,6 +37,7 @@ func waitWithTimeout(ctx context.Context, resChan chan error,
 	for {
 		select {
 		case <-time.After(timeout):
+			cancel()
 			return ErrorTimeOut
 		case <-ctx.Done():
 			return nil

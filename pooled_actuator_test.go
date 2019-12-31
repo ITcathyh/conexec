@@ -31,6 +31,10 @@ func TestPooledNormal(t *testing.T) {
 	opt := &Options{TimeOut:&timeout}
 	c = NewPooledActuator(5, opt)
 	testNormal(t, c)
+
+	c.Release()
+	c = &PooledActuator{}
+	testNormal(t, c)
 }
 
 func TestPooledEmpty(t *testing.T) {
