@@ -11,29 +11,41 @@ import (
 )
 
 // wait waits for the notification of execution result
-func wait(c TimedActuator, ctx context.Context, resChan chan error) error {
+func wait(c TimedActuator, ctx context.Context,
+	resChan chan error, cancel context.CancelFunc) error {
 	if timeout := c.GetTimeout(); timeout != nil {
-		return waitWithTimeout(ctx, resChan, *timeout)
+		return waitWithTimeout(ctx, resChan, *timeout, cancel)
 	}
 
-	select {
-	case <-ctx.Done():
-		return nil
-	case err := <-resChan:
-		return err
+	for {
+		select {
+		case <-ctx.Done():
+			return nil
+		case err := <-resChan:
+			if err != nil {
+				cancel()
+				return err
+			}
+		}
 	}
 }
 
 // waitWithTimeout waits for the notification of execution result
 // when the timeout is set
-func waitWithTimeout(ctx context.Context, resChan chan error, timeout time.Duration) error {
-	select {
-	case <-time.After(timeout):
-		return ErrorTimeOut
-	case <-ctx.Done():
-		return nil
-	case err := <-resChan:
-		return err
+func waitWithTimeout(ctx context.Context, resChan chan error,
+	timeout time.Duration, cancel context.CancelFunc) error {
+	for {
+		select {
+		case <-time.After(timeout):
+			return ErrorTimeOut
+		case <-ctx.Done():
+			return nil
+		case err := <-resChan:
+			if err != nil {
+				cancel()
+				return err
+			}
+		}
 	}
 }
 
@@ -68,7 +80,7 @@ func execTasks(c TimedActuator, parent context.Context,
 		execFunc(f)
 	}
 
-	return wait(c, ctx, resChan)
+	return wait(c, ctx, resChan, cancel)
 }
 
 // simplyRun uses a new goroutine to run the function

@@ -18,7 +18,6 @@ func DurationPtr(t time.Duration) *time.Duration {
 func wrapperTask(ctx context.Context, task Task,
 	wg *sync.WaitGroup, resChan chan error) func() {
 	return func() {
-		tmpChan := make(chan error, 1)
 		defer func() {
 			if r := recover(); r != nil {
 				err := fmt.Errorf("conexec panic:%v\n%s", r, string(debug.Stack()))
@@ -26,21 +25,13 @@ func wrapperTask(ctx context.Context, task Task,
 			}
 
 			wg.Done()
-			close(tmpChan)
 		}()
 
 		select {
 		case <-ctx.Done():
 			return // fast return
-		case tmpChan <- task():
-			if err := <-tmpChan; err != nil {
-				resChan <- err
-			}
+		case resChan <- task():
 		}
-
-		// if err := task(); err != nil {
-		// 	resChan <- err
-		// }
 	}
 }
 

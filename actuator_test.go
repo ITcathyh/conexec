@@ -38,3 +38,10 @@ func TestPanic(t *testing.T) {
 	c := NewActuator()
 	testPanic(t, c)
 }
+
+func TestManyError(t *testing.T) {
+	timeout := time.Second
+	opt := &Options{TimeOut:&timeout}
+	c := NewActuator(opt)
+	testManyError(t, c)
+}

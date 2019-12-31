@@ -15,7 +15,7 @@ func testTimeout(t *testing.T, c TimedActuator) {
 
 	Equal(t, err, ErrorTimeOut)
 	et := time.Now().UnixNano()
-	t.Logf("used time:%ds", (et-st)/1000000)
+	t.Logf("used time:%dms", (et-st)/1000000)
 	time.Sleep(time.Millisecond * 500)
 }
 
@@ -26,7 +26,26 @@ func testError(t *testing.T, c TimedActuator) {
 
 	Equal(t, err, te)
 	et := time.Now().UnixNano()
-	t.Logf("used time:%ds", (et-st)/1000000)
+	t.Logf("used time:%dms", (et-st)/1000000)
+	time.Sleep(time.Millisecond * 500)
+}
+
+func testManyError(t *testing.T, c TimedActuator) {
+	tasks := make([]Task, 0)
+	tmp, te := getErrorTask()
+	tasks = append(tasks, tmp...)
+
+	for i := 0; i < 100; i++ {
+		tmp, _ = getErrorTask()
+		tasks = append(tasks, tmp...)
+	}
+
+	st := time.Now().UnixNano()
+	err := c.Exec(tasks...)
+
+	Equal(t, err, te)
+	et := time.Now().UnixNano()
+	t.Logf("used time:%dms", (et-st)/1000000)
 	time.Sleep(time.Millisecond * 500)
 }
 
