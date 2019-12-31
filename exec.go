@@ -38,14 +38,14 @@ func waitWithTimeout(ctx context.Context, resChan chan error, timeout time.Durat
 
 // execTasks uses customized function to
 // execute every task, such as using the simplyRun
-func execTasks(c TimedActuator, ctx context.Context,
+func execTasks(c TimedActuator, parent context.Context,
 	execFunc func(f func()), tasks ...Task) error {
 	size := len(tasks)
 	if size == 0 {
 		return nil
 	}
 
-	ctx, cancel := context.WithCancel(ctx)
+	ctx, cancel := context.WithCancel(parent)
 	resChan := make(chan error, size)
 	wg := &sync.WaitGroup{}
 	wg.Add(size)
@@ -62,7 +62,8 @@ func execTasks(c TimedActuator, ctx context.Context,
 	// But the good news is that main progress
 	// will know the error immediately
 	for _, task := range tasks {
-		f := wrapperTask(task, wg, resChan)
+		child,_ := context.WithCancel(ctx)
+		f := wrapperTask(child,task, wg, resChan)
 		execFunc(f)
 	}
 
@@ -86,7 +87,7 @@ func Exec(tasks ...Task) bool {
 		go func(task Task) {
 			defer func() {
 				if r := recover(); r != nil {
-					atomic.CompareAndSwapInt32(&c, 0, 1)
+					atomic.StoreInt32(&c, 1)
 					fmt.Printf("conexec panic:%v\n%s\n", r, string(debug.Stack()))
 				}
 
@@ -94,7 +95,7 @@ func Exec(tasks ...Task) bool {
 			}()
 
 			if err := task(); err != nil {
-				atomic.CompareAndSwapInt32(&c, 0, 1)
+				atomic.StoreInt32(&c, 1)
 			}
 		}(t)
 	}

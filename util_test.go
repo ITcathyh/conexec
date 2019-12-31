@@ -7,7 +7,7 @@ import (
 	. "github.com/go-playground/assert/v2"
 )
 
-func TestTimeOutPtr(t *testing.T) {
+func TestDurationPtr(t *testing.T) {
 	timeout := time.Minute
-	Equal(t, timeout, *TimeOutPtr(timeout))
+	Equal(t, timeout, *DurationPtr(timeout))
 }

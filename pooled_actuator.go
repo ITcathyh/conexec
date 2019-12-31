@@ -62,6 +62,13 @@ func (c *PooledActuator) GetTimeout() *time.Duration {
 	return c.timeout
 }
 
+// Release will release the pool
+func (c *PooledActuator) Release() {
+	if c.pool != nil {
+		c.pool.Release()
+	}
+}
+
 // initPooledActuator init the pooled actuator once while the runtime
 // If the workerNum is zero or negative,
 // default worker num will be used
@@ -75,15 +82,7 @@ func (c *PooledActuator) initPooledActuator() {
 
 	if err != nil {
 		c.workerNum = -1
-		log.Fatal("initPooledActuator err")
-		return
-	}
-}
-
-// Release will release the pool
-func (c *PooledActuator) Release() {
-	if c.pool != nil {
-		c.pool.Release()
+		log.Errorf("initPooledActuator err")
 	}
 }
 
