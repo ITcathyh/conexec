@@ -98,7 +98,7 @@ func getErrorTask() ([]Task, error) {
 			time.Sleep(time.Second)
 			fmt.Println("6")
 			return te
-		}, )
+		})
 
 	return tasks, te
 }

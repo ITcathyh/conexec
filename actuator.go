@@ -6,26 +6,26 @@ import (
 	"time"
 )
 
-// Actuator interface
+// BaseActuator is the actuator interface
 type BaseActuator interface {
 	Exec(tasks ...Task) error
 	ExecWithContext(ctx context.Context, tasks ...Task) error
 }
 
-// Actuator interface
+// TimedActuator is the actuator interface within timeout method
 type TimedActuator interface {
 	BaseActuator
 	GetTimeout() *time.Duration
 	setTimeout(timeout *time.Duration)
 }
 
-// TimeOut
+// ErrorTimeOut is the error when executes tasks timeout
 var ErrorTimeOut = fmt.Errorf("TimeOut")
 
 // Task Type
 type Task func() error
 
-// Base Actuator struct
+// Actuator is the base struct
 type Actuator struct {
 	timeout *time.Duration
 }
@@ -46,7 +46,7 @@ func (c *Actuator) Exec(tasks ...Task) error {
 // Return nil when tasks are all completed successfully,
 // or return error when some exception happen such as timeout
 func (c *Actuator) ExecWithContext(ctx context.Context, tasks ...Task) error {
-	return execTasks(c, ctx, simplyRun, tasks...)
+	return execTasks(ctx, c, simplyRun, tasks...)
 }
 
 // GetTimeout return the timeout set before

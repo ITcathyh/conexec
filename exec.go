@@ -11,7 +11,7 @@ import (
 )
 
 // wait waits for the notification of execution result
-func wait(c TimedActuator, ctx context.Context,
+func wait(ctx context.Context, c TimedActuator,
 	resChan chan error, cancel context.CancelFunc) error {
 	if timeout := c.GetTimeout(); timeout != nil {
 		return waitWithTimeout(ctx, resChan, *timeout, cancel)
@@ -52,7 +52,7 @@ func waitWithTimeout(ctx context.Context, resChan chan error,
 
 // execTasks uses customized function to
 // execute every task, such as using the simplyRun
-func execTasks(c TimedActuator, parent context.Context,
+func execTasks(parent context.Context, c TimedActuator,
 	execFunc func(f func()), tasks ...Task) error {
 	size := len(tasks)
 	if size == 0 {
@@ -81,7 +81,7 @@ func execTasks(c TimedActuator, parent context.Context,
 		execFunc(f)
 	}
 
-	return wait(c, ctx, resChan, cancel)
+	return wait(ctx, c, resChan, cancel)
 }
 
 // simplyRun uses a new goroutine to run the function

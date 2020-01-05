@@ -6,8 +6,8 @@ import (
 )
 
 func TestPooledTimeOut(t *testing.T) {
-	timeout := time.Millisecond*50
-	opt := &Options{TimeOut:&timeout}
+	timeout := time.Millisecond * 50
+	opt := &Options{TimeOut: &timeout}
 
 	c := NewPooledActuator(5, opt)
 	testTimeout(t, c)
@@ -17,7 +17,7 @@ func TestPooledTimeOut(t *testing.T) {
 
 func TestPooledError(t *testing.T) {
 	timeout := time.Second
-	opt := &Options{TimeOut:&timeout}
+	opt := &Options{TimeOut: &timeout}
 
 	c := NewPooledActuator(5, opt)
 	testError(t, c)
@@ -28,7 +28,7 @@ func TestPooledNormal(t *testing.T) {
 	testNormal(t, c)
 
 	timeout := time.Minute
-	opt := &Options{TimeOut:&timeout}
+	opt := &Options{TimeOut: &timeout}
 	c = NewPooledActuator(5, opt)
 	testNormal(t, c)
 
@@ -44,5 +44,5 @@ func TestPooledEmpty(t *testing.T) {
 
 func TestPooledPanic(t *testing.T) {
 	c := NewPooledActuator(5)
-	testPanic(t,c)
+	testPanic(t, c)
 }

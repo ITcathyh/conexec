@@ -11,14 +11,16 @@ import (
 )
 
 const (
+	// DefaultWorkerNum will be used when pool worker num is not specified
 	DefaultWorkerNum = 4
 )
 
 var (
+	// ErrorUsingActuator is the error when goroutine pool has exception
 	ErrorUsingActuator = fmt.Errorf("ErrorUsingActuator")
 )
 
-// Actuator which has a worker pool
+// PooledActuator is a actuator which has a worker pool
 type PooledActuator struct {
 	timeout *time.Duration
 
@@ -54,7 +56,7 @@ func (c *PooledActuator) ExecWithContext(ctx context.Context, tasks ...Task) err
 		return ErrorUsingActuator
 	}
 
-	return execTasks(c, ctx, c.runWithPool, tasks...)
+	return execTasks(ctx, c, c.runWithPool, tasks...)
 }
 
 // GetTimeout return the timeout set before
