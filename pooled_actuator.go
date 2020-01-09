@@ -3,16 +3,12 @@ package conexec
 import (
 	"context"
 	"fmt"
+	"runtime"
 	"sync"
 	"time"
 
 	"github.com/panjf2000/ants/v2"
 	log "github.com/sirupsen/logrus"
-)
-
-const (
-	// DefaultWorkerNum will be used when pool worker num is not specified
-	DefaultWorkerNum = 4
 )
 
 var (
@@ -76,7 +72,7 @@ func (c *PooledActuator) Release() {
 // default worker num will be used
 func (c *PooledActuator) initPooledActuator() {
 	if c.workerNum <= 0 {
-		c.workerNum = DefaultWorkerNum
+		c.workerNum = runtime.NumCPU() << 1
 	}
 
 	var err error
