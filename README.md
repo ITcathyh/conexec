@@ -4,10 +4,10 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/ITcathyh/conexec)](https://goreportcard.com/report/github.com/ITcathyh/conexec)
 [![GoDoc](https://godoc.org/github.com/ITcathyh/conexec?status.svg)](https://godoc.org/github.com/ITcathyh/conexec)
 
-conexec is a concurrent toolkit to help execute functions concurrently in an efficient and safe way.It supports specifying the overall timeout to avoid blocking.
+conexec is a concurrent toolkit to help execute functions concurrently in an efficient and safe way. It supports specifying the overall timeout to avoid blocking.
 
 ## How to use
-Generally it can be set as a singleton to save memory.There are some example to use it.
+Generally it can be set as a singleton to save memory. There are some example to use it.
 ### Normal Actuator
 Actuator is a base struct to execute functions concurrently.
 ```
@@ -36,7 +36,7 @@ Actuator is a base struct to execute functions concurrently.
 	}
 ```
 ### Pooled Actuator
-Pooled actuator uses the goroutine pool to execute functions.In some times it is a more efficient way.
+Pooled actuator uses the goroutine pool to execute functions. In some times it is a more efficient way.
 ```
 	opt := &Options{TimeOut:DurationPtr(time.Millisecond*50)}
 	c := NewPooledActuator(5, opt)
