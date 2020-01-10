@@ -16,12 +16,19 @@ var (
 	ErrorUsingActuator = fmt.Errorf("ErrorUsingActuator")
 )
 
+// GoroutinePool is the base routine pool interface
+// User can use custom goroutine pool by implementing this interface
+type GoroutinePool interface {
+	Submit(f func()) error
+	Release()
+}
+
 // PooledActuator is a actuator which has a worker pool
 type PooledActuator struct {
 	timeout *time.Duration
 
 	workerNum int
-	pool      *ants.Pool
+	pool      GoroutinePool
 
 	initOnce sync.Once
 }
@@ -33,6 +40,13 @@ func NewPooledActuator(workerNum int, opt ...*Options) *PooledActuator {
 	}
 	setOptions(c, opt...)
 	return c
+}
+
+// WithPool will support for using custom goroutine pool
+func (c *PooledActuator) WithPool(pool GoroutinePool) *PooledActuator {
+	newActuator := c.clone()
+	newActuator.pool = pool
+	return newActuator
 }
 
 // Exec is used to run tasks concurrently
@@ -71,6 +85,12 @@ func (c *PooledActuator) Release() {
 // If the workerNum is zero or negative,
 // default worker num will be used
 func (c *PooledActuator) initPooledActuator() {
+	if c.pool != nil {
+		// just pass
+		c.workerNum = 1
+		return
+	}
+
 	if c.workerNum <= 0 {
 		c.workerNum = runtime.NumCPU() << 1
 	}
@@ -95,4 +115,13 @@ func (c *PooledActuator) runWithPool(f func()) {
 // setTimeout sets the timeout
 func (c *PooledActuator) setTimeout(timeout *time.Duration) {
 	c.timeout = timeout
+}
+
+// clone will clone this PooledActuator without goroutine pool
+func (c *PooledActuator) clone() *PooledActuator {
+	return &PooledActuator{
+		timeout:   c.timeout,
+		workerNum: c.workerNum,
+		initOnce:  sync.Once{},
+	}
 }

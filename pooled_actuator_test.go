@@ -3,6 +3,8 @@ package conexec
 import (
 	"testing"
 	"time"
+
+	"github.com/panjf2000/ants/v2"
 )
 
 func TestPooledTimeOut(t *testing.T) {
@@ -45,4 +47,11 @@ func TestPooledEmpty(t *testing.T) {
 func TestPooledPanic(t *testing.T) {
 	c := NewPooledActuator(5)
 	testPanic(t, c)
+}
+
+func TestWithPool(t *testing.T) {
+	pool, _ := ants.NewPool(5)
+	c := NewPooledActuator(5).WithPool(pool)
+	testNormal(t, c)
+	testError(t, c)
 }
