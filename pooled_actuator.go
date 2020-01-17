@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/panjf2000/ants/v2"
-	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -100,7 +99,7 @@ func (c *PooledActuator) initPooledActuator() {
 
 	if err != nil {
 		c.workerNum = -1
-		log.Errorf("initPooledActuator err")
+		fmt.Println("initPooledActuator err")
 	}
 }
 
@@ -108,7 +107,7 @@ func (c *PooledActuator) initPooledActuator() {
 func (c *PooledActuator) runWithPool(f func()) {
 	err := c.pool.Submit(f)
 	if err != nil {
-		log.Errorf("submit task err:%s", err.Error())
+		fmt.Printf("submit task err:%s\n", err.Error())
 	}
 }
 

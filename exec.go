@@ -2,12 +2,11 @@ package conexec
 
 import (
 	"context"
+	"fmt"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // wait waits for the notification of execution result
@@ -102,7 +101,7 @@ func Exec(tasks ...Task) bool {
 			defer func() {
 				if r := recover(); r != nil {
 					atomic.StoreInt32(&c, 1)
-					log.Errorf("conexec panic:%v\n%s\n", r, string(debug.Stack()))
+					fmt.Printf("conexec panic:%v\n%s\n", r, string(debug.Stack()))
 				}
 
 				wg.Done()
