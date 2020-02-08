@@ -47,6 +47,10 @@ Pooled actuator uses the goroutine pool to execute functions. In some times it i
 		// ...do sth
 	}
 ```
+Use custom goroutine pool
+```
+	c := NewPooledActuator(5).WithPool(pool)
+```
 ### Simply exec using goroutine
 ```
 	done := Exec(...)

@@ -57,6 +57,7 @@ func (c *PooledActuator) Exec(tasks ...Task) error {
 // Return nil when tasks are all completed successfully,
 // or return error when some exception happen such as timeout
 func (c *PooledActuator) ExecWithContext(ctx context.Context, tasks ...Task) error {
+	// ensure the actuator can init correctly
 	c.initOnce.Do(func() {
 		c.initPooledActuator()
 	})
