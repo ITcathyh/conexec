@@ -116,3 +116,31 @@ func Exec(tasks ...Task) bool {
 	wg.Wait()
 	return c == 0
 }
+
+// ExecWithError simply runs the tasks concurrently
+// nil will be returned is all tasks complete successfully
+// otherwise custom error will be returned
+func ExecWithError(tasks ...Task) error {
+	var err error
+	wg := &sync.WaitGroup{}
+	wg.Add(len(tasks))
+
+	for _, t := range tasks {
+		go func(task Task) {
+			defer func() {
+				if r := recover(); r != nil {
+					err = fmt.Errorf("conexec panic:%v\n%s\n", r, string(debug.Stack()))
+				}
+
+				wg.Done()
+			}()
+
+			if e := task(); e != nil {
+				err = e
+			}
+		}(t)
+	}
+
+	wg.Wait()
+	return err
+}
